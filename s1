@@ -1,0 +1,18 @@
+cat /etc/shadow | cut -d: -f1,8 | grep -v ":$" > /data/userlist
+for i in `cat /data/userlist`
+do
+UNAME=`echo $i | cut -d: -f1`
+UE=`echo $i | cut -d: -f2`
+UED=$(( $UE * 86400 ))
+TIMEINSEC=`date +%s`
+if [ $UED -ge $TIMEINSEC ];then
+SECIN7DAYS=$(( $TIMEINSEC + 604800 ))
+if [ $UED -le $SECIN7DAYS ];then
+DAYS=$(( $SECIN7DAYS - $UED ))
+NUMOFDAYS=$(( $DAYS / 86400 ))
+echo "$UNAME Password expire in $NUMOFDAYS days"
+fi
+else
+echo "$UNAME is alredy expire"
+fi
+done
